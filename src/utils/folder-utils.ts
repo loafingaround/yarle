@@ -20,8 +20,11 @@ const getFilePath = (dstPath: string, note: any): string => {
   return `${dstPath}${path.sep}${getNoteFileName(dstPath, note)}`;
 };
 
-export const getMdFilePath = (note: any): string => {
-  return getFilePath(paths.mdPath, note);
+// TODO: fix save path: it's not saving output files in stack directory struture and the output
+// is missing some files - compare output files and directories before and after
+export const getMdFilePath = (note: any, notebookStackName: string): string => {
+  let dstPath = paths.mdPath + (notebookStackName && notebookStackName.trim() !== "" ? `${path.sep}${notebookStackName}`: "");
+  return getFilePath(dstPath, note);
 };
 
 export const getHtmlFilePath = (note: any): string => {

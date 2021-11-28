@@ -15,7 +15,7 @@ import { convert2Html } from './convert-to-html';
 import { NoteData } from './models/NoteData';
 import { loggerInfo } from './utils/loggerInfo';
 
-export const processNode = (note: any, notebookName: string): void => {
+export const processNode = (note: any, notebookName: string, notebookStackName: string): void => {
 
   const dateStarted: Date = new Date();
   loggerInfo(EOL);
@@ -48,9 +48,10 @@ export const processNode = (note: any, notebookName: string): void => {
     // tslint:disable-next-line:no-console
     // loggerInfo(`data =>\n ${JSON.stringify(data)} \n***`);
 
-    saveMdFile(data, note);
+    saveMdFile(data, note, notebookStackName);
 
     if (yarleOptions.keepOriginalHtml) {
+      // TODO: fix save paths for these as well?
       convert2Html(noteData);
       saveHtmlFile(noteData, note);
     }

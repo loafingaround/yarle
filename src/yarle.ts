@@ -74,7 +74,7 @@ const setOptions = (options: YarleOptions): void => {
   /*}*/
 };
 
-export const parseStream = async (options: YarleOptions, enexSource: string): Promise<void> => {
+export const parseStream = async (options: YarleOptions, enexSource: string, notebookStackName: string): Promise<void> => {
   loggerInfo(`Getting stream from ${enexSource}`);
   const stream = fs.createReadStream(enexSource);
   // const xml = new XmlStream(stream);
@@ -112,7 +112,7 @@ export const parseStream = async (options: YarleOptions, enexSource: string): Pr
           // make sure single attributes are not collapsed
           note['note-attributes'] = noteAttributes;
         }
-        processNode(note, notebookName);
+        processNode(note, notebookName, notebookStackName);
         ++noteNumber;
         loggerInfo(`Notes processed: ${noteNumber}\n\n`);
       }
@@ -168,7 +168,7 @@ export const dropTheRope = async (options: YarleOptions): Promise<void> => {
   setOptions(options);
   for (const enex of enexSources) {
     utils.setPaths(enex.path);
-    await parseStream(options, enex.path);
+    await parseStream(options, enex.path, enex.notebookStackName);
   }
 
 };
