@@ -1,5 +1,5 @@
 // tslint:disable:no-console
-import fs from 'fs';
+import fs, { Dirent } from 'fs';
 import { merge } from 'lodash';
 import * as path from 'path';
 import flow from 'xml-flow';
@@ -43,6 +43,11 @@ export const defaultYarleOptions: YarleOptions = {
     headingStyle: 'atx',
   },
 };
+
+interface EnexSource {
+  path: string
+  notebookStackName: string
+}
 
 export let yarleOptions: YarleOptions = { ...defaultYarleOptions };
 
@@ -130,29 +135,40 @@ export const parseStream = async (options: YarleOptions, enexSource: string): Pr
 };
 
 export const dropTheRope = async (options: YarleOptions): Promise<void> => {
-  let enexSources: string[];
+  let enexSources: EnexSource[];
 
   if (options.enexSources.length === 1 && options.enexSources[0].endsWith('.enex')) {
     loggerInfo(`Converting notes in file: ${options.enexSources}`);
-    enexSources = options.enexSources;
+    enexSources = options.enexSources.map(enexFile => ({
+      "path": enexFile,
+      "notebookStackName": ""
+    }));
   } else {
-    // TODO: also get enex files one level deep
-    // TODO: somehow include folder (notebook stack) name in enexSources
     // TODO: add info log here (as above for single file)?
-    const enexFiles = fs
-        .readdirSync(options.enexSources[0])
-        .filter((file: any) => {
-            return file.match(/.*\.enex/ig);
-        });
-
-    enexSources = enexFiles.map(enexFile => `${options.enexSources[0]}/${enexFile}`);
+    const baseDir = options.enexSources[0];
+    const enexEntries = fs.readdirSync(baseDir, {"withFileTypes": true});
+    let enexPredicate = ((entry: Dirent) => entry.isFile() && entry.name.match(/.*\.enex/ig));
+    enexSources = enexEntries
+      .filter(enexPredicate)
+      .map(enexFile => ({
+        "path": `${baseDir}/${enexFile.name}`,
+        "notebookStackName": ""
+      }))
+      .concat(...enexEntries
+        .filter(entry => entry.isDirectory())
+        .map(dir => fs.readdirSync(`${baseDir}/${dir.name}`, {"withFileTypes": true})
+          .filter(enexPredicate)
+          .map(enexFile => ({
+            "path": `${baseDir}/${dir.name}/${enexFile.name}`,
+            "notebookStackName": dir.name
+      }))));
   }
 
   clearLogFile();
   setOptions(options);
   for (const enex of enexSources) {
-    utils.setPaths(enex);
-    await parseStream(options, enex);
+    utils.setPaths(enex.path);
+    await parseStream(options, enex.path);
   }
 
 };
