@@ -21,7 +21,8 @@ const getFilePath = (dstPath: string, note: any): string => {
 };
 
 // TODO: fix save path: it's not saving output files in stack directory struture and the output
-// is missing some files - compare output files and directories before and after
+// is missing some files - compare output files and directories before and after (to convert
+// the enex files in a particular folder you still have its path first in the enexSources option)
 export const getMdFilePath = (note: any, notebookStackName: string): string => {
   let dstPath = paths.mdPath + (notebookStackName && notebookStackName.trim() !== "" ? `${path.sep}${notebookStackName}`: "");
   return getFilePath(dstPath, note);
