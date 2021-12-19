@@ -147,9 +147,9 @@ export const dropTheRope = async (options: YarleOptions): Promise<void> => {
     // TODO: add info log here (as above for single file)?
     const baseDir = options.enexSources[0];
     const enexEntries = fs.readdirSync(baseDir, {"withFileTypes": true});
-    let enexPredicate = ((entry: Dirent) => entry.isFile() && entry.name.match(/.*\.enex/ig));
+    let isEnexFile = ((entry: Dirent) => entry.isFile() && entry.name.match(/.*\.enex/ig));
     enexSources = enexEntries
-      .filter(enexPredicate)
+      .filter(isEnexFile)
       .map(enexFile => ({
         "path": `${baseDir}/${enexFile.name}`,
         "notebookStackName": ""
@@ -157,7 +157,7 @@ export const dropTheRope = async (options: YarleOptions): Promise<void> => {
       .concat(...enexEntries
         .filter(entry => entry.isDirectory())
         .map(dir => fs.readdirSync(`${baseDir}/${dir.name}`, {"withFileTypes": true})
-          .filter(enexPredicate)
+          .filter(isEnexFile)
           .map(enexFile => ({
             "path": `${baseDir}/${dir.name}/${enexFile.name}`,
             "notebookStackName": dir.name
