@@ -62,8 +62,7 @@ export const wikiStyleLinksRule = {
         const renderedObsidianDisplayName = omitObsidianLinksDisplayName ? '' : `|${displayName}`;
 
         if (value.startsWith('evernote://')) {
-            const fileName = normalizeTitle(token['text']);
-            const displayName = token['text'];
+            const fileName = normalizeTitle(displayName);
             const noteIdNameMap = RuntimePropertiesSingleton.getInstance();
             if (isTOC(noteIdNameMap.getCurrentNoteName())) {
                 noteIdNameMap.addItemToTOCMap({ url: value, title: fileName });
