@@ -10,7 +10,7 @@ import { loggerInfo } from './utils/loggerInfo';
 import { clearLogFile } from './utils/clearLogFile';
 import { applyLinks } from './utils/apply-links';
 
-export const run = async (opts?: YarleOptions) => {
+export const run = async (opts?: YarleOptions) => {
     clearLogFile();
     // tslint:disable-next-line:no-require-imports
     const argv = require('minimist')(process.argv.slice(2));
@@ -21,12 +21,12 @@ export const run = async (opts?: YarleOptions) => {
         : `${__dirname}/../config.json`;
     console.log(`Loading config from ${configFile}`);
     const options: YarleOptions = {...require(configFile), ...opts};
-    if (options.enexSources.length === 1 && options.enexSources[0].endsWith('.enex')) {
+    if (options.enexSources.length === 1 && options.enexSources[0].endsWith('.enex')) {
         loggerInfo(`Converting notes in file: ${options.enexSources}`);
     } else {
         const enexFiles = fs
             .readdirSync(options.enexSources[0])
-            .filter((file: any) => {
+            .filter((file: any) => {
                 return file.match(/.*\.enex/ig);
             });
 
