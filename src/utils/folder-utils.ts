@@ -10,6 +10,8 @@ import { loggerInfo } from './loggerInfo';
 import { logger } from './logger';
 import { OutputFormat } from './../output-format';
 
+// TODO: update various methods/"paths" to take account of notebook stack folders in output path?
+
 export const paths: Path = {};
 
 export const getResourceDir = (dstPath: string, note: any): string => {
@@ -96,6 +98,8 @@ export const setPaths = (enexSource: string): void => {
   const outputDir = path.isAbsolute(yarleOptions.outputDir)
     ? yarleOptions.outputDir
     : `${process.cwd()}${path.sep}${yarleOptions.outputDir}`;
+
+  // TODO: include notebook stack name in both these paths in every assignment below where it's necessary
 
   paths.mdPath = `${outputDir}${path.sep}notes${path.sep}`;
   paths.resourcePath = `${outputDir}${path.sep}notes${path.sep}${yarleOptions.resourcesDir}`;

@@ -134,10 +134,27 @@ export const parseStream = async (options: YarleOptions, enexSource: string): Pr
 };
 
 export const dropTheRope = async (options: YarleOptions): Promise<Array<string>> => {
+  let enexSources: string[];
+  if (options.enexSources.length === 1 && options.enexSources[0].endsWith('.enex')) {
+    loggerInfo(`Converting notes in file: ${options.enexSources}`);
+    enexSources = options.enexSources;
+  } else {
+    // TODO: also get enex files one level deep
+    // TODO: somehow include folder (notebook stack) name in enexSources
+    // TODO: add info log here (as above for single file)?
+    const enexFiles = fs
+      .readdirSync(options.enexSources[0])
+      .filter((file: any) => {
+        return file.match(/.*\.enex/ig);
+      });
+
+    enexSources = enexFiles.map(enexFile => `${options.enexSources[0]}${path.sep}${enexFile}`);
+  }
+
   clearLogFile();
   setOptions(options);
   const outputNotebookFolders = [];
-  for (const enex of options.enexSources) {
+  for (const enex of enexSources) {
     utils.setPaths(enex);
     const runtimeProps = RuntimePropertiesSingleton.getInstance();
     runtimeProps.setCurrentNotebookName(utils.getNotebookName(enex));

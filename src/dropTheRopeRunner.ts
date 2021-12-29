@@ -21,17 +21,6 @@ export const run = async (opts?: YarleOptions) => {
         : `${__dirname}/../config.json`;
     console.log(`Loading config from ${configFile}`);
     const options: YarleOptions = {...require(configFile), ...opts};
-    if (options.enexSources.length === 1 && options.enexSources[0].endsWith('.enex')) {
-        loggerInfo(`Converting notes in file: ${options.enexSources}`);
-    } else {
-        const enexFiles = fs
-            .readdirSync(options.enexSources[0])
-            .filter((file: any) => {
-                return file.match(/.*\.enex/ig);
-            });
-
-        options.enexSources = enexFiles.map(enexFile => `${options.enexSources[0]}${path.sep}${enexFile}`);
-    }
     const outputNotebookFolders = await yarle.dropTheRope(options);
 
     // apply internal links
