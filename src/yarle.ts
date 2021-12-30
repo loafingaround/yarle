@@ -171,7 +171,7 @@ export const dropTheRope = async (options: YarleOptions): Promise<Array<string>>
   setOptions(options);
   const outputNotebookFolders = [];
   for (const enex of enexSources) {
-    utils.setPaths(enex.path);
+    utils.setPaths(enex.path, enex.notebookStackName);
     const runtimeProps = RuntimePropertiesSingleton.getInstance();
     runtimeProps.setCurrentNotebookName(utils.getNotebookName(enex.path));
     await parseStream(options, enex.path);

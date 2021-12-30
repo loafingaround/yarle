@@ -88,7 +88,7 @@ export const clearMdNotesDistDir = (): void => {
   clearDistDir(paths.mdPath);
 };
 
-export const setPaths = (enexSource: string): void => {
+export const setPaths = (enexSource: string, notebookStackName: string): void => {
   // loggerInfo('setting paths');
   const enexFolder = enexSource.split(path.sep);
   // loggerInfo(`enex folder split: ${JSON.stringify(enexFolder)}`);
@@ -101,20 +101,22 @@ export const setPaths = (enexSource: string): void => {
 
   // TODO: include notebook stack name in both these paths in every assignment below where it's necessary
 
-  paths.mdPath = `${outputDir}${path.sep}notes${path.sep}`;
-  paths.resourcePath = `${outputDir}${path.sep}notes${path.sep}${yarleOptions.resourcesDir}`;
+  let notebookStackNameWithWithPathSep = notebookStackName ? `${notebookStackName}${path.sep}` : "";
+
+  paths.mdPath = `${outputDir}${path.sep}notes${path.sep}${notebookStackNameWithWithPathSep}`;
+  paths.resourcePath = `${outputDir}${path.sep}notes${path.sep}${notebookStackNameWithWithPathSep}${yarleOptions.resourcesDir}`;
 
   // loggerInfo(`Skip enex filename from output? ${yarleOptions.skipEnexFileNameFromOutputPath}`);
   if (!yarleOptions.skipEnexFileNameFromOutputPath) {
     paths.mdPath = `${paths.mdPath}${enexFile}`;
     // loggerInfo(`mdPath: ${paths.mdPath}`);
-    paths.resourcePath = `${outputDir}${path.sep}notes${path.sep}${enexFile}${path.sep}${yarleOptions.resourcesDir}`;
+    paths.resourcePath = `${outputDir}${path.sep}notes${path.sep}${notebookStackNameWithWithPathSep}${enexFile}${path.sep}${yarleOptions.resourcesDir}`;
   }
 
   if (yarleOptions.outputFormat === OutputFormat.LogSeqMD) {
     const folderName = yarleOptions.logseqSettings.journalNotes ? 'journal' : 'pages';
-    paths.mdPath = `${outputDir}${path.sep}${folderName}${path.sep}`;
-    paths.resourcePath = `${outputDir}${path.sep}${yarleOptions.resourcesDir}`;
+    paths.mdPath = `${outputDir}${path.sep}${folderName}${path.sep}${notebookStackNameWithWithPathSep}`;
+    paths.resourcePath = `${outputDir}${path.sep}${notebookStackNameWithWithPathSep}${yarleOptions.resourcesDir}`;
   }
 
   fsExtra.mkdirsSync(paths.mdPath);
