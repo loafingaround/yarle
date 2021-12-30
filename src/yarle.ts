@@ -96,7 +96,7 @@ export const parseStream = async (options: YarleOptions, enexSource: string): Pr
       return reject();
     };
     if (!fs.existsSync(enexSource)) {
-      return loggerInfo(JSON.stringify({ name: 'NoSuchFileOrDirectory', message: 'source Enex file does not exists' }));
+      return loggerInfo(JSON.stringify({ name: 'NoSuchFileOrDirectory', message: 'source Enex file does not exist' }));
     }
 
     const xml = flow(stream);
